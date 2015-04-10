@@ -1,4 +1,4 @@
-from .sudoku_components import *
+from sudoku_components import *
 
 def main():
     numbers = [
@@ -12,8 +12,9 @@ def main():
         [0, 6, 7, 5, 0, 3, 9, 0, 1],
         [0, 0, 3, 8, 4, 9, 2, 6, 0]
     ]
+    a = 1
     board = Board(numbers)
-    print(board)
+    board.show()
 
 
 if __name__ == '__main__':

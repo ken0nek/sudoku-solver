@@ -17,26 +17,47 @@ class Cell(object):
         return self.number_of_candidates() == 1
 
     def get_numbers(self):
-        possible_number = []
+        possible_numbers = []
         for index, n in enumerate(self.candidates):
             if n:
-                possible_number.append(index+1)
-        return possible_number
+                possible_numbers.append(index+1)
+        if self.is_fixed():
+            return possible_numbers[0]
+        else:
+            return possible_numbers
 
 
 class Board(object):
     def __init__(self, numbers):
-        self.cells = [[]]
-        for row in numbers:
-            for column in row:
-
-
-
-
+        self.cells = []
+        for i in range(9):
+            cells = []
+            for j in range(9):
+                cells.append(Cell(i,j,numbers[i][j]))
+            self.cells.append(cells)
 
     def show(self):
-        print("")
+        print("  ―――――――― ――――――――― ――――――――")
+        for i in range(9):
+            print(end="| ")
+            for j in range(9):
+                cell = self.cells[i][j]
+                if cell.is_fixed():
+                    number = cell.get_numbers()
 
-    def check_row(self):
+                else:
+                    number = "-"
+                if j == 2 or j == 5:
+                    print(number, end=" | ")
+                else:
+                    if j == 8:
+                        print(number, end="")
+                    else:
+                        print(number, end="  ")
+            if i == 2 or i == 5:
+                print(end=" |\n")
+                print("| ―――――――― ――――――――― ―――――――― |")
+            else:
+                print(end=" |\n")
+        print("  ―――――――― ――――――――― ――――――――  ")
 
-    def check(self):
