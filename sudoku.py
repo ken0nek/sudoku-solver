@@ -9,23 +9,23 @@ class Sudoku(object):
     def solve(self):
         print("START")
         count = 0
-        while not self.board.is_finished():
-            flag = 0
-            try:
-                count += 1
-                for i in range(9):
-                    for j in range(9):
-                        if self.board.check(row=i, column=j):
-                            flag = 1
-                            time.sleep(0.2)
-            except:
-                self.board.show()
-                break
+        flag = 0
+        while self.board.is_finished():
+            while flag:
+                flag = 0
+                try:
+                    count += 1
+                    for i in range(9):
+                        for j in range(9):
+                            if self.board.check(row=i, column=j):
+                                flag = 1
+                                time.sleep(0.2)
+                except:
+                    self.board.show()
+                    break
 
-            if flag == 0:
-                print("After {} loops".format(count))
-                print("higher")
-                break
+            while flag:
+
         print("FINISH")
 
 
