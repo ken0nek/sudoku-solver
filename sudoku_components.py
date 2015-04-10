@@ -77,8 +77,8 @@ class Board(object):
             possible_place_of_the_number = []
             for c in range(9):
                 cell = self.cells[r][c]
-                if (not cell.is_fixed()) and (number in cell.get_numbers()):
-                            possible_place_of_the_number.append((r,c))
+                if not cell.is_fixed() and number in cell.get_numbers():
+                    possible_place_of_the_number.append((r,c))
             if len(possible_place_of_the_number) == 1:
                 x,y = possible_place_of_the_number[0]
                 self.cells[x][y] = number_to_array(number)
@@ -87,8 +87,8 @@ class Board(object):
             possible_place_of_the_number = []
             for r in range(9):
                 cell = self.cells[r][c]
-                if (not cell.is_fixed()) and (number in cell.get_numbers()):
-                            possible_place_of_the_number.append((r,c))
+                if not cell.is_fixed() and number in cell.get_numbers():
+                    possible_place_of_the_number.append((r,c))
             if len(possible_place_of_the_number) == 1:
                 x,y = possible_place_of_the_number[0]
                 self.cells[x][y] = number_to_array(number)
@@ -106,59 +106,75 @@ class Board(object):
                     x, y = possible_place_of_the_number[0]
                     self.cells[x][y] = number_to_array(number)
 
-    def check(self, row, column):
-        cell = self.cells[row][column]
-        if not cell.is_fixed():
-            pre_number = cell.get_numbers()
-            print("start check ({}, {}) -> {}".format(row+1, column+1, pre_number))
-            self.check_box(cell)
+    def check(self):
+        flag = 1
+        count = 0
+        while flag:
+            flag = 0
+            try:
+                count += 1
+                for row in range(9):
+                    for column in range(9):
+                        # print(row,column)
+                        cell = self.cells[row][column]
+                        if not cell.is_fixed():
+                            pre_number = cell.get_numbers()
+                            print("start check ({}, {}) -> {}".format(row+1, column+1, pre_number))
+                            self.check_box(cell)
 
-            self.check_column(cell)
+                            self.check_column(cell)
 
-            self.check_row(cell)
+                            self.check_row(cell)
 
-            print("finish check ({}, {}) -> {}".format(row+1, column+1, cell.get_numbers()))
-            is_changed = pre_number != cell.get_numbers()
-            if is_changed:
-                self.show((row, column))
-            return is_changed
-        else:
-            return False
+                            print("finish check ({}, {}) -> {}".format(row+1, column+1, cell.get_numbers()))
+                            is_changed = pre_number != cell.get_numbers()
+                            if is_changed:
+                                self.show((row, column))
+                                flag = 1
+
+            except:
+                self.show()
+                break
+
+
+
 
     def check_box(self, cell):
-        print("start check box")
+        # print("start check box")
 
-        for r in [0,3,6]:
-            for c in [0,3,6]:
+        r_base = (cell.row // 3) * 3
+        c_base = (cell.column // 3) * 3
+        for r in range(r_base, r_base + 3):
+            for c in range(c_base, c_base + 3):
                 if not (cell.row == r and cell.column == c):
                     cell_around = self.cells[r][c]
                     if cell_around.is_fixed():
                         number = cell_around.get_numbers()
-                        print("detect {}".format(number))
+                        # print("detect {}".format(number))
                         cell.candidates[number - 1] = 0
-        print("finish check box")
+        # print("finish check box")
 
     def check_row(self, cell):
-        print("start check row")
+        # print("start check row")
         for x in range(9):
             if x != cell.column:
                 cell_around = self.cells[cell.row][x]
                 if cell_around.is_fixed():
                     number = cell_around.get_numbers()
-                    print("detect {}".format(number))
+                    # print("detect {}".format(number))
                     cell.candidates[number - 1] = 0
-        print("finish check row")
+        # print("finish check row")
 
     def check_column(self, cell):
-        print("start check column")
+        # print("start check column")
         for y in range(9):
             if y != cell.row:
                 cell_around = self.cells[y][cell.column]
                 if cell_around.is_fixed():
                     number = cell_around.get_numbers()
-                    print("detect {}".format(number))
+                    # print("detect {}".format(number))
                     cell.candidates[number - 1] = 0
-        print("finish check column")
+        # print("finish check column")
 
     def is_finished(self):
         for cell_row in self.cells:

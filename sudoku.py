@@ -10,21 +10,10 @@ class Sudoku(object):
         print("START")
         count = 0
         flag = 0
-        while self.board.is_finished():
-            while flag:
-                flag = 0
-                try:
-                    count += 1
-                    for i in range(9):
-                        for j in range(9):
-                            if self.board.check(row=i, column=j):
-                                flag = 1
-                                time.sleep(0.2)
-                except:
-                    self.board.show()
-                    break
+        # while not self.board.is_finished():
 
-            while flag:
+        self.board.check()
+        self.board.scan()
 
         print("FINISH")
 
