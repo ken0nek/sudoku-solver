@@ -16,7 +16,10 @@ class Sudoku(object):
             self.board.check()
             if not self.board.scan():
                 break
-        self.board.show()
+        self.board.set_not_fixed()
+        self.board.depth_first_search()
+        # self.board.show_possible()
+        # self.board.show()
         # print(count)
         print("FINISH")
 
@@ -28,7 +31,7 @@ def main():
         [8, 0, 0, 5, 0, 0, 0, 0, 0],
         [0, 6, 0, 4, 0, 0, 0, 0, 0],
         [5, 0, 0, 3, 1, 6, 8, 0, 0],
-        [0, 3, 0, 0, 0, 8, 0, 6, 0],
+        [0, 0, 0, 0, 0, 8, 0, 6, 0],
         [6, 0, 7, 2, 0, 0, 3, 0, 0],
         [0, 0, 0, 0, 0, 9, 2, 0, 0],
         [9, 0, 0, 0, 8, 0, 0, 0, 0]

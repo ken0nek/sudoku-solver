@@ -1,4 +1,5 @@
 from termcolor import colored
+import time
 
 def number_to_array(number):
     if number == 0:
@@ -13,6 +14,9 @@ class Cell(object):
     def __init__(self, row, column, number):
         self.row = row
         self.column = column
+        self.candidates = number_to_array(number)
+
+    def put(self,number):
         self.candidates = number_to_array(number)
 
     def number_of_candidates(self):
@@ -31,7 +35,6 @@ class Cell(object):
         else:
             return possible_numbers
 
-
 class Board(object):
     def __init__(self, numbers):
         self.cells = []
@@ -40,6 +43,29 @@ class Board(object):
             for j in range(9):
                 cells.append(Cell(i, j, numbers[i][j]))
             self.cells.append(cells)
+
+        self.not_fixed = {}
+        self.start = time.time()
+
+    def show_possible(self):
+        for row in range(9):
+            for column in range(9):
+                if not self.cells[row][column].is_fixed():
+                    print("({}, {}) -> {}".format(row+1, column+1, self.cells[row][column].get_numbers()))
+
+    def set_not_fixed(self):
+        for row in range(9):
+            for column in range(9):
+               if not self.cells[row][column].is_fixed():
+                   self.not_fixed[(row,column)] = self.cells[row][column].candidates
+
+    def next_coordinate(self):
+        for row in range(9):
+            for column in range(9):
+                cell = self.cells[row][column]
+                if not cell.is_fixed():
+                    return row,column
+        return None,None
 
     def show(self, coordinate=(-1, -1)):
         print("  ―――――――― ――――――――― ――――――――")
@@ -128,34 +154,28 @@ class Board(object):
         count = 0
         while flag:
             flag = False
-            try:
-                count += 1
-                for row in range(9):
-                    for column in range(9):
-                        # print(row,column)
-                        cell = self.cells[row][column]
-                        if not cell.is_fixed():
-                            pre_number = cell.get_numbers()
-                            pre_count = self.count_fixed()
-                            self.check_box(cell)
+            count += 1
+            for row in range(9):
+                for column in range(9):
+                    # print(row,column)
+                    cell = self.cells[row][column]
+                    if not cell.is_fixed():
+                        pre_number = cell.get_numbers()
+                        pre_count = self.count_fixed()
+                        self.check_box(cell)
 
-                            self.check_column(cell)
+                        self.check_column(cell)
 
-                            self.check_row(cell)
+                        self.check_row(cell)
 
-                            is_changed = pre_number != cell.get_numbers()
-                            post_count = self.count_fixed()
-                            if is_changed:
-                                print("start check ({}, {}) -> {}".format(row+1, column+1, pre_number))
-                                print("finish check ({}, {}) -> {}".format(row+1, column+1, cell.get_numbers()))
-                                flag = True
-                                if post_count != pre_count:
-                                    self.show((row, column))
-
-
-            except:
-                self.show()
-                break
+                        is_changed = pre_number != cell.get_numbers()
+                        post_count = self.count_fixed()
+                        if is_changed:
+                            print("start check ({}, {}) -> {}".format(row+1, column+1, pre_number))
+                            print("finish check ({}, {}) -> {}".format(row+1, column+1, cell.get_numbers()))
+                            flag = True
+                            if post_count != pre_count:
+                                self.show((row, column))
 
     def check_box(self, cell):
         # print("start check box")
@@ -193,6 +213,44 @@ class Board(object):
                     # print("detect {}".format(number))
                     cell.candidates[number - 1] = 0
         # print("finish check column")
+
+    def is_valid(self,row,column,number):
+
+        r_base = (row // 3) * 3
+        c_base = (column // 3) * 3
+        for r in range(r_base, r_base + 3):
+            for c in range(c_base, c_base + 3):
+                if self.cells[r][c].is_fixed:
+                    if number == self.cells[r][c].get_numbers():
+                        return False
+        r = row
+        for c in range(9):
+             if self.cells[r][c].is_fixed:
+                    if number == self.cells[r][c].get_numbers():
+                        return False
+        c = column
+        for r in range(9):
+             if self.cells[r][c].is_fixed:
+                    if number == self.cells[r][c].get_numbers():
+                        return False
+        return True
+
+    def depth_first_search(self):
+        x,y = self.next_coordinate()
+        if (x,y) == (None,None):
+            print(time.time() - self.start)
+            exit()
+            # return
+
+        # time.sleep(1)
+        for n in self.cells[x][y].get_numbers():
+            if self.is_valid(x,y,n):
+                self.cells[x][y].put(n)
+                self.show((x,y))
+                self.depth_first_search()
+                self.cells[x][y].candidates = self.not_fixed[(x,y)]
+
+        return
 
     def is_finished(self):
         for cell_row in self.cells:
