@@ -64,16 +64,16 @@ class Board(object):
     def check(self, row, column):
         cell = self.cells[row][column]
         pre_candidates = cell.candidates
-        print("start check {}, {}, {}", row, column, pre_candidates)
+        print("start check {}, {}, {}".format(row+1, column+1, pre_candidates))
 
         self.check_box(cell)
 
-        self.check_column(cell)
-
-        self.check_row(cell)
+        # self.check_column(cell)
+        #
+        # self.check_row(cell)
 
         post_candidates = cell.candidates
-        print("finish check {}, {}, {}", row, column, post_candidates)
+        print("finish check {}, {}, {}".format(row+1, column+1, post_candidates))
 
         self.show()
 
@@ -82,10 +82,12 @@ class Board(object):
         if not cell.is_fixed:
             r_base = (cell.row / 3) * 3
             c_base = (cell.column / 3) * 3
-            for r in range(r_base, r_base + 3):
-                for c in range(c_base, c_base + 3):
-                    if cell.row != r and cell.column != c:
+            for r in range(r_base, r_base + 2):
+                for c in range(c_base, c_base + 2):
+                    print(cell.row, cell.column, r, c)
+                    if not (cell.row == r and cell.column == c):
                         cell_around = self.cells[r][c]
+                        print(cell_around.get_numbers)
                         if cell_around.is_fixed:
                             number = cell_around.get_numbers()
                             print("detect {}".format(number))
@@ -115,3 +117,10 @@ class Board(object):
                         print("detect {}".format(number))
                         cell.candidates[number - 1] = 0
         print("finish check column")
+
+    def is_finished(self):
+        for cell_row in self.cells:
+            for cell in cell_row:
+                if not cell.is_fixed():
+                    return False
+        return True

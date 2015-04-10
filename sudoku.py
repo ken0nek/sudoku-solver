@@ -1,5 +1,5 @@
 from sudoku_components import *
-
+import time
 
 class Sudoku(object):
     def __init__(self, numbers):
@@ -7,10 +7,12 @@ class Sudoku(object):
 
     def solve(self):
         print("START")
-
-    def scan(self):
-        print("SCAN")
-
+        while not self.board.is_finished():
+            for i in range(9):
+                for j in range(9):
+                    self.board.check(row=i, column=j)
+                    time.sleep(1)
+        print("FINISH")
 
 def main():
     numbers = [
