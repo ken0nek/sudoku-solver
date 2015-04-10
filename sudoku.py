@@ -13,7 +13,7 @@ def main():
         [0, 0, 3, 8, 4, 9, 2, 6, 0]
     ]
     board = Board(numbers)
-    print(board)
+    board.show()
 
 
 if __name__ == '__main__':
