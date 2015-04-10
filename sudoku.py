@@ -1,4 +1,4 @@
-from sudoku_components import *
+from .sudoku_components import *
 
 def main():
     numbers = [
