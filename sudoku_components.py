@@ -1,14 +1,18 @@
 
+def number_to_array(number):
+    if number == 0:
+        array = [1] * 9
+    else:
+        array = [0] * 9
+        array[number-1] = 1
+    return array
+
 class Cell(object):
 
     def __init__(self, row, column, number):
         self.row = row
         self.column = column
-        if number == 0:
-            self.candidates = [1] * 9
-        else:
-            self.candidates = [0] * 9
-            self.candidates[number-1] = 1
+        self.candidates = number_to_array(number)
 
     def number_of_candidates(self):
         return sum(self.candidates)
@@ -61,6 +65,48 @@ class Board(object):
                 print(end=" |\n")
         print("  ―――――――― ――――――――― ――――――――  ")
 
+    def scan(self):
+        for number in range(1,10):
+            self.scan_box(number)
+            self.scan_row_and_column(number)
+
+    def scan_row_and_column(self,number):
+        for r in range(9):
+            possible_place_of_the_number = []
+            for c in range(9):
+                cell = self.cells[r][c]
+                if (not cell.is_fixed()) and (number in cell.get_numbers()):
+                            possible_place_of_the_number.append((r,c))
+            if len(possible_place_of_the_number) == 1:
+                x,y = possible_place_of_the_number[0]
+                self.cells[x][y] = number_to_array(number)
+
+        for c in range(9):
+            possible_place_of_the_number = []
+            for r in range(9):
+                cell = self.cells[r][c]
+                if (not cell.is_fixed()) and (number in cell.get_numbers()):
+                            possible_place_of_the_number.append((r,c))
+            if len(possible_place_of_the_number) == 1:
+                x,y = possible_place_of_the_number[0]
+                self.cells[x][y] = number_to_array(number)
+
+
+    def scan_box(self,number):
+        for r_base in [0,3,6]:
+            for c_base in [0,3,6]:
+                possible_place_of_the_number = []
+                for r in range(r_base, r_base + 3):
+                    for c in range(c_base, c_base + 3):
+                        cell = self.cells[r][c]
+                        if (not cell.is_fixed()) and (number in cell.get_numbers()):
+                            possible_place_of_the_number.append((r,c))
+                if len(possible_place_of_the_number) == 1:
+                    x,y = possible_place_of_the_number[0]
+                    self.cells[x][y] = number_to_array(number)
+
+
+
     def check(self, row, column):
         cell = self.cells[row][column]
         pre_candidates = cell.candidates
@@ -79,7 +125,7 @@ class Board(object):
 
     def check_box(self, cell):
         print("start check box")
-        if not cell.is_fixed:
+        if not cell.is_fixed():
             r_base = (cell.row / 3) * 3
             c_base = (cell.column / 3) * 3
             for r in range(r_base, r_base + 2):
