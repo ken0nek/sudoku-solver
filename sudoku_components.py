@@ -107,3 +107,10 @@ class Board(object):
                     print("detect")
 
         print("finish check column")
+
+    def is_finished(self):
+        for cell_row in self.cells:
+            for cell in cell_row:
+               if not cell.is_fixed():
+                    return False
+        return True
