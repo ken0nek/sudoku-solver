@@ -85,7 +85,11 @@ class Board(object):
             for r in range(r_base, r_base + 3):
                 for c in range(c_base, c_base + 3):
                     if cell.row != r and cell.column != c:
-                        print("detect")
+                        cell_around = self.cells[r][c]
+                        if cell_around.is_fixed:
+                            number = cell_around.get_numbers()
+                            print("detect {}".format(number))
+                            cell.candidates[number - 1] = 0
         print("finish check box")
 
     def check_row(self, cell):
@@ -93,10 +97,11 @@ class Board(object):
         if not cell.is_fixed:
             for x in range(9):
                 if x != cell.column:
-                    print("detect")
-                    # if let number = self.mat[cell.row][x].number {
-                    #     println("detect : \(number)")
-                    #     cell.candidates[number - 1] = 0
+                    cell_around = self.cells[cell.row][x]
+                    if cell_around.is_fixed:
+                        number = cell_around.get_numbers()
+                        print("detect {}".format(number))
+                        cell.candidates[number - 1] = 0
         print("finish check row")
 
     def check_column(self, cell):
@@ -104,6 +109,9 @@ class Board(object):
         if not cell.is_fixed:
             for y in range(9):
                 if y != cell.row:
-                    print("detect")
-
+                    cell_around = self.cells[y][cell.column]
+                    if cell_around.is_fixed:
+                        number = cell_around.get_numbers()
+                        print("detect {}".format(number))
+                        cell.candidates[number - 1] = 0
         print("finish check column")
