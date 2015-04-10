@@ -16,9 +16,10 @@ class Sudoku(object):
         self.board = Board(numbers)
 
     def solve(self):
-        while
+        print("START")
 
     def scan(self):
+        print("SCAN")
 
 
 def main():
