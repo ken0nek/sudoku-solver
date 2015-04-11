@@ -1,6 +1,7 @@
 from termcolor import colored
 import time
 
+
 def number_to_array(number):
     if number == 0:
         array = [1] * 9
@@ -9,6 +10,7 @@ def number_to_array(number):
         array[number-1] = 1
     return array
 
+
 class Cell(object):
 
     def __init__(self, row, column, number):
@@ -16,7 +18,7 @@ class Cell(object):
         self.column = column
         self.candidates = number_to_array(number)
 
-    def put(self,number):
+    def put(self, number):
         self.candidates = number_to_array(number)
 
     def number_of_candidates(self):
@@ -34,6 +36,7 @@ class Cell(object):
             return possible_numbers[0]
         else:
             return possible_numbers
+
 
 class Board(object):
     def __init__(self, numbers):
@@ -56,16 +59,16 @@ class Board(object):
     def set_not_fixed(self):
         for row in range(9):
             for column in range(9):
-               if not self.cells[row][column].is_fixed():
-                   self.not_fixed[(row,column)] = self.cells[row][column].candidates
+                if not self.cells[row][column].is_fixed():
+                    self.not_fixed[(row, column)] = self.cells[row][column].candidates
 
     def next_coordinate(self):
         for row in range(9):
             for column in range(9):
                 cell = self.cells[row][column]
                 if not cell.is_fixed():
-                    return row,column
-        return None,None
+                    return row, column
+        return None, None
 
     def show(self, coordinate=(-1, -1)):
         print("  ―――――――― ――――――――― ――――――――")
@@ -103,16 +106,16 @@ class Board(object):
 
     def scan(self):
         flag = False
-        for number in range(1,10):
+        for number in range(1, 10):
             for r in range(9):
                 possible_place_of_the_number = []
                 for c in range(9):
                     cell = self.cells[r][c]
                     if not cell.is_fixed() and number in cell.get_numbers():
-                        possible_place_of_the_number.append((r,c))
+                        possible_place_of_the_number.append((r, c))
                 if len(possible_place_of_the_number) == 1:
-                    x,y = possible_place_of_the_number[0]
-                    print(number,'row','(',x+1,y+1,')')
+                    x, y = possible_place_of_the_number[0]
+                    print(number, 'row', '(', x+1, y+1, ')')
                     self.cells[x][y].candidates = number_to_array(number)
                     self.show((x, y))
                     flag = True
@@ -123,26 +126,26 @@ class Board(object):
                 for r in range(9):
                     cell = self.cells[r][c]
                     if not cell.is_fixed() and number in cell.get_numbers():
-                        possible_place_of_the_number.append((r,c))
+                        possible_place_of_the_number.append((r, c))
                 if len(possible_place_of_the_number) == 1:
-                    x,y = possible_place_of_the_number[0]
-                    print(number,'column','(',x+1,y+1,')')
+                    x, y = possible_place_of_the_number[0]
+                    print(number, 'column', '(', x+1, y+1, ')')
                     self.cells[x][y].candidates = number_to_array(number)
                     self.show((x, y))
                     flag = True
                     return True
 
-            for r_base in [0,3,6]:
-                for c_base in [0,3,6]:
+            for r_base in [0, 3, 6]:
+                for c_base in [0, 3, 6]:
                     possible_place_of_the_number = []
                     for r in range(r_base, r_base + 3):
                         for c in range(c_base, c_base + 3):
                             cell = self.cells[r][c]
                             if (not cell.is_fixed()) and (number in cell.get_numbers()):
-                                possible_place_of_the_number.append((r,c))
+                                possible_place_of_the_number.append((r, c))
                     if len(possible_place_of_the_number) == 1:
                         x, y = possible_place_of_the_number[0]
-                        print(number,'box','(',x+1,y+1,')')
+                        print(number, 'box', '(', x+1, y+1, ')')
                         self.cells[x][y].candidates = number_to_array(number)
                         self.show((x, y))
                         flag = True
@@ -214,7 +217,7 @@ class Board(object):
                     cell.candidates[number - 1] = 0
         # print("finish check column")
 
-    def is_valid(self,row,column,number):
+    def is_valid(self, row, column, number):
 
         r_base = (row // 3) * 3
         c_base = (column // 3) * 3
@@ -225,30 +228,30 @@ class Board(object):
                         return False
         r = row
         for c in range(9):
-             if self.cells[r][c].is_fixed:
-                    if number == self.cells[r][c].get_numbers():
-                        return False
+            if self.cells[r][c].is_fixed:
+                if number == self.cells[r][c].get_numbers():
+                    return False
         c = column
         for r in range(9):
-             if self.cells[r][c].is_fixed:
-                    if number == self.cells[r][c].get_numbers():
-                        return False
+            if self.cells[r][c].is_fixed:
+                if number == self.cells[r][c].get_numbers():
+                    return False
         return True
 
     def depth_first_search(self):
-        x,y = self.next_coordinate()
-        if (x,y) == (None,None):
+        x, y = self.next_coordinate()
+        if (x, y) == (None, None):
             print(time.time() - self.start)
             exit()
             # return
 
         # time.sleep(1)
         for n in self.cells[x][y].get_numbers():
-            if self.is_valid(x,y,n):
+            if self.is_valid(x, y, n):
                 self.cells[x][y].put(n)
-                self.show((x,y))
+                self.show((x, y))
                 self.depth_first_search()
-                self.cells[x][y].candidates = self.not_fixed[(x,y)]
+                self.cells[x][y].candidates = self.not_fixed[(x, y)]
 
         return
 

@@ -11,7 +11,7 @@ class Sudoku(object):
         count = 0
         flag = 0
         while not self.board.is_finished():
-            count+=1
+            count += 1
             print(count)
             self.board.check()
             if not self.board.scan():
